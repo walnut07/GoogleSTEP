@@ -77,12 +77,16 @@ void my_initialize() {
 void *my_malloc(size_t size) {
   my_metadata_t *metadata = my_heap.free_head;
   my_metadata_t *prev = NULL;
+  my_metadata_t *min_free = my_heap.free_head;
   // First-fit: Find the first free slot the object fits.
   // TODO: Update this logic to Best-fit!
-  while (metadata && metadata->size < size) {
-    prev = metadata;
+  while (metadata) {
+    if (metadata->size >= size) { // 十分なサイズがあったら、
+      if (min_free->size < metadata->size) min_free = metadata; // そのサイズがこれまでの最小サイズよりも小さいか確かめる。
+    }
     metadata = metadata->next;
   }
+  metadata = min_free;
   // now, metadata points to the first free slot
   // and prev is the previous entry.
 
