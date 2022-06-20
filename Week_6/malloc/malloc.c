@@ -77,18 +77,29 @@ void my_initialize() {
 void *my_malloc(size_t size) {
   my_metadata_t *metadata = my_heap.free_head;
   my_metadata_t *prev = NULL;
-  my_metadata_t *min_free; // 引数のsizeより大きいサイズを持つfree_headの中で、サイズがもっとも小さいものを指すポインタ。
+  my_metadata_t *min_free = NULL; // A pointer that points to the smallest metadata among the ones whose size is bigger than the argument `size`. 引数のsizeより大きいサイズを持つfree_headの中で、サイズがもっとも小さいものを指すポインタ。
+  my_metadata_t *min_free_prev = NULL;
   // First-fit: Find the first free slot the object fits.
   // TODO: Update this logic to Best-fit!
   while (metadata) {
-    if (metadata->size >= size) { // 引数のサイズよりも、metadataのサイズの方が大きかったら、
-      if (min_free->size < metadata->size) min_free = metadata; // そのサイズがこれまでの最小サイズよりも小さいか確かめ、trueならmin_freeを更新する。
+    if (metadata->size >= size) { // metadata has enough space if it's size is bigger than `size`.
+      if (!min_free) {
+        min_free = metadata; 
+        min_free_prev = prev;
+      }
+      else if (min_free->size > metadata->size) {
+        min_free = metadata; 
+        min_free_prev = prev;
+      }
     }
+    prev = metadata;
     metadata = metadata->next;
   }
-  metadata = min_free;
-  // now, metadata points to the first free slot
-  // and prev is the previous entry.
+
+  metadata = min_free; 
+  prev = min_free_prev;
+  // now, metadata points to the free_head whose size is bigger than `size` and smallest among them.
+  // and prev is the entry previous to metadata.
 
   if (!metadata) {
     // There was no free slot available. We need to request a new memory region
