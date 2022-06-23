@@ -38,23 +38,33 @@ typedef struct my_heap_t {
 //
 // Static variables (DO NOT ADD ANOTHER STATIC VARIABLES!)
 //
-my_heap_t my_heap;
+int num_of_bin = 3;
+my_heap_t bins[3];
+
+int get_my_bin(size_t size) {
+  for (int i = 0; i < num_of_bin; i++) {
+    if (i * 1000 <= size && size < (i + 1) * 1000) {
+      return i;
+    }
+  }
+}
 
 //
 // Helper functions (feel free to add/remove/edit!)
 //
 
-void my_add_to_free_list(my_metadata_t *metadata) {
+my_heap_t  my_add_to_free_list(my_metadata_t *metadata, int my_bin_idx) {
   assert(!metadata->next);
-  metadata->next = my_heap.free_head;
-  my_heap.free_head = metadata;
+  metadata->next = bins[my_bin_idx].free_head;
+  bins[get_my_bin(metadata->size)].free_head = metadata; 
+  
 }
 
-void my_remove_from_free_list(my_metadata_t *metadata, my_metadata_t *prev) {
+void my_remove_from_free_list(my_metadata_t *metadata, my_metadata_t *prev, int remove_bin_idx) {
   if (prev) {
     prev->next = metadata->next;
   } else {
-    my_heap.free_head = metadata->next;
+    bins[remove_bin_idx].free_head = metadata->next;
   }
   metadata->next = NULL;
 }
@@ -65,9 +75,11 @@ void my_remove_from_free_list(my_metadata_t *metadata, my_metadata_t *prev) {
 
 // This is called at the beginning of each challenge.
 void my_initialize() {
-  my_heap.free_head = &my_heap.dummy;
-  my_heap.dummy.size = 0;
-  my_heap.dummy.next = NULL;
+  for(int i = 0; i < num_of_bin; i++){
+    bins[i].free_head = &bins[i].dummy;
+    bins[i].dummy.size = 0;
+    bins[i].dummy.next = NULL;
+  }
 }
 
 // my_malloc() is called every time an object is allocated.
@@ -75,25 +87,30 @@ void my_initialize() {
 // 4000. You are not allowed to use any library functions other than
 // mmap_from_system() / munmap_to_system().
 void *my_malloc(size_t size) {
-  my_metadata_t *metadata = my_heap.free_head;
+  int my_bin_idx = get_my_bin(size);
+  my_metadata_t *metadata = bins[my_bin_idx].free_head;
   my_metadata_t *prev = NULL;
   my_metadata_t *min_free = NULL; // A pointer that points to the smallest metadata among the ones whose size is bigger than the argument `size`. 引数のsizeより大きいサイズを持つfree_headの中で、サイズがもっとも小さいものを指すポインタ。
   my_metadata_t *min_free_prev = NULL;
-  // First-fit: Find the first free slot the object fits.
-  // TODO: Update this logic to Best-fit!
-  while (metadata) {
-    if (metadata->size >= size) { // metadata has enough space if it's size is bigger than `size`.
-      if (!min_free) {
-        min_free = metadata; 
-        min_free_prev = prev;
+
+  while (my_bin_idx < num_of_bin) {
+    my_metadata_t *metadata = bins[my_bin_idx].free_head;
+    my_metadata_t *prev = NULL;
+    while (metadata) {
+      if (metadata->size >= size) { // metadata has enough space if it's size is bigger than `size`.
+        if (!min_free) {
+          min_free = metadata; 
+          min_free_prev = prev;
+        }
+        else if (min_free->size > metadata->size) {
+          min_free = metadata; 
+          min_free_prev = prev;
+        }
       }
-      else if (min_free->size > metadata->size) {
-        min_free = metadata; 
-        min_free_prev = prev;
-      }
+      prev = metadata;
+      metadata = metadata->next;
     }
-    prev = metadata;
-    metadata = metadata->next;
+    my_bin_idx++;
   }
 
   metadata = min_free; 
@@ -115,7 +132,8 @@ void *my_malloc(size_t size) {
     metadata->size = buffer_size - sizeof(my_metadata_t);
     metadata->next = NULL;
     // Add the memory region to the free list.
-    my_add_to_free_list(metadata);
+    my_add_to_free_list(metadata, get_my_bin(metadata->size));
+    my_bin_idx = num_of_bin - 1;
     // Now, try my_malloc() again. This should succeed.
     return my_malloc(size);
   }
@@ -129,7 +147,7 @@ void *my_malloc(size_t size) {
   size_t remaining_size = metadata->size - size;
   metadata->size = size;
   // Remove the free slot from the free list.
-  my_remove_from_free_list(metadata, prev);
+  my_remove_from_free_list(metadata, prev, my_bin_idx - 1);
 
   if (remaining_size > sizeof(my_metadata_t)) {
     // Create a new metadata for the remaining free slot.
@@ -143,7 +161,7 @@ void *my_malloc(size_t size) {
     new_metadata->size = remaining_size - sizeof(my_metadata_t);
     new_metadata->next = NULL;
     // Add the remaining free slot to the free list.
-    my_add_to_free_list(new_metadata);
+    my_add_to_free_list(new_metadata, get_my_bin(new_metadata->size));
   }
   return ptr;
 }
@@ -158,7 +176,7 @@ void my_free(void *ptr) {
   //     metadata   ptr
   my_metadata_t *metadata = (my_metadata_t *)ptr - 1;
   // Add the free slot to the free list.
-  my_add_to_free_list(metadata);
+  my_add_to_free_list(metadata, get_my_bin(metadata->size));
 }
 
 // This is called at the end of each challenge.
