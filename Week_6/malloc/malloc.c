@@ -38,8 +38,8 @@ typedef struct my_heap_t {
 //
 // Static variables (DO NOT ADD ANOTHER STATIC VARIABLES!)
 //
-int num_of_bin = 3;
-my_heap_t bins[3];
+int num_of_bin = 7;
+my_heap_t bins[7];
 
 int get_my_bin(size_t size) {
   for (int i = 0; i < num_of_bin; i++) {
@@ -93,7 +93,7 @@ void *my_malloc(size_t size) {
   my_metadata_t *min_free = NULL; // A pointer that points to the smallest metadata among the ones whose size is bigger than the argument `size`. 引数のsizeより大きいサイズを持つfree_headの中で、サイズがもっとも小さいものを指すポインタ。
   my_metadata_t *min_free_prev = NULL;
 
-  while (my_bin_idx < num_of_bin) {
+  while (!min_free && my_bin_idx < num_of_bin) {
     my_metadata_t *metadata = bins[my_bin_idx].free_head;
     my_metadata_t *prev = NULL;
     while (metadata) {
@@ -160,6 +160,7 @@ void *my_malloc(size_t size) {
     my_metadata_t *new_metadata = (my_metadata_t *)((char *)ptr + size);
     new_metadata->size = remaining_size - sizeof(my_metadata_t);
     new_metadata->next = NULL;
+    
     // Add the remaining free slot to the free list.
     my_add_to_free_list(new_metadata, get_my_bin(new_metadata->size));
   }
