@@ -9,7 +9,7 @@ The problem instruction follows the Kurumi's documentation.
 It visits the nearest point from the current point.
 
 ## Result
-The greedy approach seemed to find the most optimal tour where n = 5 or n = 8. However, when N is 16 or more, the result tour does not look like very optimal. From the pictures below, it is clear that the more points there are, the more crosses in the tour.<br>
+The greedy approach seemed to find the most optimal tour where n = 5 or n = 8. However, when N is 16 or more, the result tour does not look like very optimal. Based on the pictures below, it is clear that the more points there are, the more crosses in the tour.<br>
 n = 5
 ![greedy n = 5](greedy_n=5.png)
 
