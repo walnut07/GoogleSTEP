@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-
+# python3 solver_greedy.py input_0.csv >output_0.csv
+# python3 solver_greedy.py input_1.csv >output_1.csv
+# python3 solver_greedy.py input_2.csv >output_2.csv
+# python3 solver_greedy.py input_3.csv >output_3.csv
 import sys
 import math
 
@@ -12,7 +15,6 @@ def distance(city1, city2):
 
 def solve(cities):
     N = len(cities)
-
     dist = [[0] * N for i in range(N)]
     for i in range(N):
         for j in range(i, N):
