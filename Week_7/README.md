@@ -20,15 +20,15 @@ Let me explain my reasoning behind the sorting.
 
 `j-k-i` : `c[i][j]` causes a cache miss, so does `a[i][k]`.  I expect this pattern to be the slowest because there are two elements that cannot take the advantage of cache hit.
 ```c
-for (j = 0; j < n; i++)
-    for (j = 0; k < n; j++)
-        for (i = 0; i < n; k++)
+for (j = 0; j < n; j++)
+    for (k = 0; k < n; k++)
+        for (i = 0; i < n; i++)
             c[i][j] += a[i][k] * b[k][j];
 ```
 
 `k-j-i` : `c[i][j]` causes a cache miss, so does `a[i][k]`.
 ```c
-for (k = 0; k < n; i++)
+for (k = 0; k < n; k++)
     for (j = 0; j < n; j++)
         for (i = 0; i < n; k++)
             c[i][j] += a[i][k] * b[k][j];
