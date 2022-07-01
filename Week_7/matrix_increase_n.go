@@ -1,4 +1,4 @@
-// go run matrix_measure.go > time_required-k-j-i.csv
+// go run matrix_increase_n.go > time_required-k-j-i.csv
 package main
 
 import (
@@ -38,7 +38,7 @@ func main() {
 		// Multiply metrices.
 		for k := 0; k < n; k++ {
 			for j := 0; j < n; j++ {
-				for j := 0; j < n; j++ {
+				for i := 0; i < n; i++ {
 					c[i][j] += a[i][k] * b[k][j];
 				}
 			}

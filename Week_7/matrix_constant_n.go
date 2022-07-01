@@ -1,5 +1,5 @@
 package main
-// go run matrix_constant_n.go > c_time_required_k-i-j.csv
+// go run matrix_constant_n.go > c_time_required_k-j-i.csv
 import (
 	"fmt"
 	"time"
@@ -37,8 +37,8 @@ func main() {
 
 		// Multiply metrices.
 		for k := 0; k < n; k++ {
-			for i := 0; i < n; i++ {
-				for j := 0; j < n; j++ {
+			for j := 0; j < n; j++ {
+				for i := 0; i < n; i++ {
 					c[i][j] += a[i][k] * b[k][j];
 				}
 			}
@@ -46,7 +46,7 @@ func main() {
 
 		endTime := time.Now()
 		runningTime := endTime.Sub(startTime) // μs represents microsecond 
-		fmt.Println(n, runningTime.Seconds())
+		fmt.Println(runningTime.Seconds())
 
 		i++
 	}
