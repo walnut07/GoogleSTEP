@@ -8,7 +8,7 @@
 
 *Do this homework using C, C++, Java, Rust or Go. Don't use Python.
 
-## Answer
+## My answer
 
 I expect the six patterns to be sorted like this.
 
@@ -19,53 +19,14 @@ I expect the six patterns to be sorted like this.
 Let me explain my reasoning behind the sorting.
 
 `j-k-i` : `c[i][j]` causes a cache miss, so does `a[i][k]`.  I expect this pattern to be the slowest because there are two elements that cannot take the advantage of cache hit.
-```c
-for (j = 0; j < n; j++)
-    for (k = 0; k < n; k++)
-        for (i = 0; i < n; i++)
-            c[i][j] += a[i][k] * b[k][j];
-```
 
 `k-j-i` : `c[i][j]` causes a cache miss, so does `a[i][k]`.
-```c
-for (k = 0; k < n; k++)
-    for (j = 0; j < n; j++)
-        for (i = 0; i < n; k++)
-            c[i][j] += a[i][k] * b[k][j];
-```
-
 
 `i-j-k` :  `b[k][j]` causes a cache miss.
-```c
-for (i = 0; i < n; i++)
-    for (j = 0; j < n; j++)
-        for (k = 0; k < n; k++)
-            c[i][j] += a[i][k] * b[k][j];
-```
 
 `j-i-k` : `b[k][j]` causes a cache miss.
-```c
-for (j = 0; j < n; i++)
-    for (i = 0; i < n; j++)
-        for (k = 0; k < n; k++)
-            c[i][j] += a[i][k] * b[k][j];
-```
-
 
 `i-k-j` : None of the three elements does not cause a cache miss.
-```c
-for (i = 0; i < n; i++)
-    for (k = 0; k < n; j++)
-        for (j = 0; j < n; k++)
-            c[i][j] += a[i][k] * b[k][j];
-```
-
 
 `k-i-j` : None of the three elements does not cause a cache miss.
-```c
-for (k = 0; k < n; i++)
-    for (i = 0; i < n; j++)
-        for (j = 0; j < n; k++)
-            c[i][j] += a[i][k] * b[k][j];
-```
 
