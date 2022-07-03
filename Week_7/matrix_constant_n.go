@@ -1,5 +1,5 @@
 package main
-// go run matrix_constant_n.go > c_time_required_k-j-i.csv
+// go run matrix_constant_n.go > c_time_required_X-X-X.csv
 import (
 	"fmt"
 	"time"
@@ -7,9 +7,9 @@ import (
 
 func main() {
 	i := 0
-	n := 50
+	n := 300
 
-	for i < 1000 {
+	for i < 100 {
 
 		a := make([][]int, n)
 		for i := range a {
@@ -45,7 +45,7 @@ func main() {
 		}
 
 		endTime := time.Now()
-		runningTime := endTime.Sub(startTime) // μs represents microsecond 
+		runningTime := endTime.Sub(startTime) 
 		fmt.Println(runningTime.Seconds())
 
 		i++

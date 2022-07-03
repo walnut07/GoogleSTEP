@@ -1,4 +1,4 @@
-// go run matrix_increase_n.go > time_required-k-j-i.csv
+// go run matrix_increase_n.go > time_required-X-X-X.csv
 package main
 
 import (
@@ -11,7 +11,7 @@ func main() {
 
 	for n := 2; n < 300; n++ {
 		
-		a := make([][]int, n)
+		a := make([][]int, n) 
     for i := range a {
         a[i] = make([]int, n)
     }
@@ -34,18 +34,19 @@ func main() {
 		}
 
 		startTime := time.Now()
-		
+
 		// Multiply metrices.
-		for k := 0; k < n; k++ {
-			for j := 0; j < n; j++ {
-				for i := 0; i < n; i++ {
+		// modulize
+		for a := 0; k < n; k++ {
+			for b := 0; j < n; j++ {
+				for c := 0; i < n; i++ {
 					c[i][j] += a[i][k] * b[k][j];
 				}
 			}
 		}
 
 		endTime := time.Now()
-		runningTime := endTime.Sub(startTime) // μs represents microsecond 
+		runningTime := endTime.Sub(startTime) 
 		fmt.Println(n, runningTime.Seconds())
 	}
 }
