@@ -1,7 +1,13 @@
 # **The program description of calculator.py** 
 
 ## Summary 
-This program can add, substruct, multiply, and divide either integer or float numbers. 
+`calculator.py` can add, substruct, multiply, and divide either integer or float numbers. 
+
+*Update in July 5th 2022;
+As of today, `calculator.py` still cannot evaluate multiplication and division.
+There are multiple ways to implement the multiplication or division feature in a calculator, but the one I was going to implement was **making a line written in Reverse Polish Notation**.
+I haven't implemented it, but here's the document of my idea on how to convert a line into Reverse Polish Notation.<br>
+[Let's make a line written in the reverse polish notation!](https://docs.google.com/presentation/d/1XFKkZgFP6WjbnAIY93QSV_DKiPwSh8JeoexSKcOI3S8/edit?usp=sharing)
 
 ## How it works
 This program can broadly be devided into two parts: `tokenize` and `evaluate`.
